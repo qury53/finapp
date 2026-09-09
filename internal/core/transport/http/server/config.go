@@ -7,13 +7,13 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-// HTTP_ADDR required
-// SHUT_DOWN_TIMEOUT default 30s
+// Конфиг HTTPServer-а
 type Config struct {
 	HTTPAddr     string        `envconfig:"ADDR" required:"true"`
 	ShutdownTime time.Duration `envconfig:"SHUTDOWN_TIMEOUT" default:"30s"`
 }
 
+// Конструктор конфига, парсит переменные окружения с .env файла
 func NewConfig() (*Config, error) {
 	var config Config
 	if err := envconfig.Process("HTTP", &config); err != nil {
@@ -23,6 +23,7 @@ func NewConfig() (*Config, error) {
 	return &config, nil
 }
 
+// Конструктор конфига, если что-то идет не так, то вызывается паника.
 func NewConfigMust() *Config {
 	config, err := NewConfig()
 	if err != nil {
