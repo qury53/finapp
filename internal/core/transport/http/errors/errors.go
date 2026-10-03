@@ -1,10 +1,11 @@
-package core_http_errors
+package core_errors
 
 import "errors"
 
 var (
-	ErrInvalidArgument = errors.New("invalid argument")
-	ErrNotFound        = errors.New("not found")
-	ErrConflict        = errors.New("conflict")
-	ErrUnauthorized    = errors.New("unauthorized")
+	ErrInvalidArgument    = errors.New("invalid argument")
+	ErrNotFound           = errors.New("not found")
+	ErrConflict           = errors.New("conflict")
+	ErrUnauthorized       = errors.New("unauthorized")
+	ErrInvalidCredentials = errors.New("invalid credentials")
 )

@@ -1,13 +1,17 @@
 package transport_http_middleware
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
+	"runtime/debug"
+	"strings"
 	"time"
 
 	uuid "github.com/google/uuid"
 	core_logger "github.com/qury53/finapp/internal/core/logger"
 	transport_http_response "github.com/qury53/finapp/internal/core/transport/http/response"
+	auth_service "github.com/qury53/finapp/internal/features/auth/service"
 )
 
 const (
@@ -21,6 +25,13 @@ func Panic() Middleware {
 			defer func() {
 				if p := recover(); p != nil {
 					logger := core_logger.FromContext(r.Context())
+					logger.Error(
+						"panic recovered",
+						slog.Any("panic", p),
+						slog.String("stack", string(debug.Stack())),
+						slog.String("method", r.Method),
+						slog.String("path", r.URL.Path),
+					)
 					responseHandler := transport_http_response.NewHTTPResponseHandler(
 						w,
 						logger,
@@ -87,10 +98,32 @@ func Logger(logger *core_logger.Logger) Middleware {
 	}
 }
 
-func Auth() Middleware {
+func AuthMiddleware(service *auth_service.AuthService) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			//... after auth feature
+			authHeader := r.Header.Get("Authorization")
+			if authHeader == "" {
+				http.Error(w, "missing token", http.StatusUnauthorized)
+				return
+			}
+
+			parts := strings.Split(authHeader, " ")
+			if len(parts) != 2 || parts[0] != "Bearer" {
+				http.Error(w, "Invalid Authorization format. Expected 'Bearer <token>'", http.StatusUnauthorized)
+				return
+			}
+
+			tokenString := parts[1]
+
+			claims, err := service.ValidateToken(tokenString)
+			if err != nil {
+				http.Error(w, "Invalid or expired token: "+err.Error(), http.StatusUnauthorized)
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), "claimsKey", claims)
+
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }
@@ -99,7 +132,7 @@ func CORS() Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			allowewOrigins := map[string]struct{}{
-				"http://localhost:5050": {},
+				"http://localhost:7070": {},
 			}
 
 			origin := r.Header.Get("origin")

@@ -7,13 +7,13 @@ import (
 )
 
 type Config struct {
-	LogLevel  int    `envconfig:"LOG_LEVEL" default:"-4"`
-	LogFolder string `envconfig:"LOG_FOLDER" required:"true"`
+	LogLevel  int    `envconfig:"LEVEL" default:"-4"`
+	LogFolder string `envconfig:"FOLDER" required:"true"`
 }
 
 func NewConfig() (*Config, error) {
 	var config Config
-	if err := envconfig.Process("LOGGER", &config); err != nil {
+	if err := envconfig.Process("LOG", &config); err != nil {
 		return nil, fmt.Errorf("failed to proccess .env file: %w", err)
 	}
 

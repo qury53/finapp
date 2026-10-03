@@ -8,7 +8,7 @@ import (
 
 // Route структура роута
 type Route struct {
-	Method      int
+	Method      string
 	Path        string
 	Handler     http.HandlerFunc
 	Middlewares []transport_http_middleware.Middleware

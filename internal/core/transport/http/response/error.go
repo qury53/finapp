@@ -1,6 +1,6 @@
 package transport_http_response
 
-type ErrorResnpose struct {
+type ErrorResponse struct {
 	Error   string
 	Message string
 }

@@ -37,7 +37,7 @@ func (r *APIRouter) WithMiddleware() http.Handler {
 func (r *APIRouter) RegisterRoutes(routes ...Route) {
 	for _, route := range routes {
 		pattern := fmt.Sprintf("%s %s", route.Method, route.Path)
-		h := r.WithMiddleware()
+		h := route.WithMiddleware()
 		r.Handle(pattern, h)
 	}
 }

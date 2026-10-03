@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>FINAPP — минималистичное приложение для отслеживания расходов</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2317171a'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='15' fill='%23a0a0a6' text-anchor='middle'%3EF%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0e0e0f; --bg-soft:#141416; --panel:#17171a; --panel-2:#1e1e22;
+  --border:#26262b; --border-2:#34343a;
+  --text:#e9e9eb; --text-2:#9b9ba2; --text-3:#67676f;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.55;color:var(--text);
+  background:radial-gradient(900px 420px at 75% -120px,#17171a 0%,rgba(23,23,26,0) 70%),var(--bg);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;
+}
+::selection{background:#3a3a40;color:#fff}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+
+/* ---------- шапка ---------- */
+.header{position:sticky;top:0;z-index:50;background:rgba(14,14,15,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-weight:700;font-size:18px;letter-spacing:.12em}
+.logo span{color:var(--text-3)}
+.header-nav{display:flex;align-items:center;gap:10px}
+
+/* ---------- кнопки ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 18px;border-radius:8px;
+  border:1px solid var(--border-2);background:transparent;color:var(--text);font-size:14px;cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;user-select:none}
+.btn:hover{background:var(--panel-2);border-color:var(--text-2)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+.btn-solid{background:var(--text);border-color:var(--text);color:#0e0e0f;font-weight:600}
+.btn-solid:hover{background:#d6d6da;border-color:#d6d6da}
+.btn-sm{padding:6px 12px;font-size:13px}
+.btn-block{width:100%}
+.link{background:none;border:none;color:var(--text-2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.link:hover{color:var(--text)}
+
+/* ---------- hero ---------- */
+.hero{max-width:1100px;margin:0 auto;padding:96px 24px 72px}
+.hero-badge{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);
+  border:1px solid var(--border-2);border-radius:999px;padding:6px 14px;margin-bottom:28px}
+.hero-title{font-size:clamp(56px,10vw,110px);font-weight:800;letter-spacing:-.03em;line-height:1}
+.hero-title span{color:var(--text-3)}
+.hero-sub{max-width:560px;margin-top:22px;font-size:17px;color:var(--text-2)}
+.hero-actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+
+.hero-preview{margin-top:64px;border:1px solid var(--border);border-radius:14px;background:var(--panel);overflow:hidden;max-width:640px}
+.preview-head{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg-soft)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border-2)}
+.preview-title{margin-left:8px;font-size:12px;color:var(--text-3);letter-spacing:.06em}
+.preview-body{padding:8px 18px 18px}
+.preview-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px dashed var(--border)}
+.preview-name{color:var(--text)}
+.preview-name small{display:block;color:var(--text-3);font-size:12px}
+.preview-val{font-family:var(--mono);color:var(--text-2);white-space:nowrap}
+.preview-total{border-bottom:none;border-top:1px solid var(--border-2);margin-top:6px;padding-top:14px}
+.preview-total .preview-val{color:var(--text);font-weight:600}
+
+/* ---------- секции ---------- */
+.section{max-width:1100px;margin:0 auto;padding:56px 24px;border-top:1px solid var(--border)}
+.section-title{font-size:24px;font-weight:700;margin-bottom:32px;letter-spacing:-.01em}
+.features,.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.feature,.step{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:22px;transition:border-color .15s}
+.feature:hover,.step:hover{border-color:var(--border-2)}
+.feature svg{width:22px;height:22px;color:var(--text-2);margin-bottom:14px;display:block}
+.feature h3,.step h3{font-size:15px;margin-bottom:8px}
+.feature p,.step p{font-size:13.5px;color:var(--text-2)}
+.step-num{font-family:var(--mono);color:var(--text-3);font-size:13px;letter-spacing:.1em}
+.step h3{margin-top:10px}
+
+/* ---------- формы / модалки ---------- */
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.field input{width:100%;padding:10px 12px;background:var(--bg-soft);border:1px solid var(--border-2);border-radius:8px;
+  color:var(--text);font:inherit;outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--text-2)}
+.field input::placeholder{color:var(--text-3)}
+.form-error{margin-bottom:14px;padding:10px 12px;border:1px solid var(--border-2);border-radius:8px;background:var(--bg-soft);color:var(--text-2);font-size:13px}
+.backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;
+  box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-head h3{font-size:17px;font-weight:600}
+.modal-close{background:none;border:none;color:var(--text-3);font-size:22px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:6px}
+.modal-close:hover{color:var(--text);background:var(--panel-2)}
+.modal-foot{margin-top:16px;text-align:center;font-size:13px;color:var(--text-3)}
+
+.footer{border-top:1px solid var(--border);margin-top:40px}
+.footer-inner{max-width:1100px;margin:0 auto;padding:24px;color:var(--text-3);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="/">FIN<span>APP</span></a>
+    <nav class="header-nav" id="headerNav">
+      <button class="btn" disabled>…</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-badge">учёт личных финансов — без лишнего</div>
+    <h1 class="hero-title">FIN<span>APP</span></h1>
+    <p class="hero-sub">Приложение для отслеживания расходов. Только доходы, расходы и понятная статистика — ничего, что отвлекает.</p>
+    <div class="hero-actions" id="heroActions"></div>
+
+    <div class="hero-preview">
+      <div class="preview-head">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="preview-title">FINAPP — обзор месяца</span>
+      </div>
+      <div class="preview-body">
+        <div class="preview-row"><div class="preview-name">Продукты<small>супермаркет</small></div><div class="preview-val">− 1 250</div></div>
+        <div class="preview-row"><div class="preview-name">Транспорт<small>метро</small></div><div class="preview-val">− 96</div></div>
+        <div class="preview-row"><div class="preview-name">Зарплата<small>октябрь</small></div><div class="preview-val">+ 85 000</div></div>
+        <div class="preview-row"><div class="preview-name">Подписка<small>онлайн-сервис</small></div><div class="preview-val">− 399</div></div>
+        <div class="preview-row preview-total"><div class="preview-name">Баланс</div><div class="preview-val">83 255</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Всё, что нужно. Ничего, что мешает.</h2>
+    <div class="features">
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <h3>Расходы</h3>
+        <p>Фиксируйте траты в пару секунд: название, сумма, категория, описание.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        <h3>Доходы</h3>
+        <p>Учитывайте поступления и всегда видьте полную картину своих денег.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 20v-7M12 20V6M18 20v-10"/></svg>
+        <h3>Статистика</h3>
+        <p>Баланс, средние значения и разбивка расходов по категориям.</p>
+      </div>
+          </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Как это работает</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><h3>Зарегистрируйтесь</h3><p>Имя пользователя, e-mail и пароль — вся настройка занимает минуту.</p></div>
+      <div class="step"><div class="step-num">02</div><h3>Добавляйте записи</h3><p>Доходы и расходы появляются в профиле мгновенно.</p></div>
+      <div class="step"><div class="step-num">03</div><h3>Следите за статистикой</h3><p>Баланс и категории пересчитываются на лету.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>FINAPP © 2025</span>
+    <span>Минимализм в учёте финансов</span>
+  </div>
+</footer>
+
+<!-- модальные окна авторизации -->
+<div class="backdrop" id="backdrop" hidden>
+  <div class="modal" id="loginModal" hidden>
+    <div class="modal-head"><h3>Вход</h3><button class="modal-close" data-close title="Закрыть">×</button></div>
+    <form id="loginForm" novalidate>
+      <label class="field"><span>Имя пользователя</span><input name="username" autocomplete="username" required placeholder="cool_username"></label>
+      <label class="field"><span>Пароль</span><input name="password" type="password" autocomplete="current-password" required placeholder="••••••••"></label>
+      <div class="form-error" id="loginError" hidden></div>
+      <button class="btn btn-solid btn-block" type="submit">Войти</button>
+    </form>
+    <div class="modal-foot">Нет аккаунта? <button type="button" class="link" data-switch="register">Зарегистрируйтесь</button></div>
+  </div>
+
+  <div class="modal" id="registerModal" hidden>
+    <div class="modal-head"><h3>Регистрация</h3><button class="modal-close" data-close title="Закрыть">×</button></div>
+    <form id="registerForm" novalidate>
+      <label class="field"><span>Имя пользователя</span><input name="username" minlength="3" maxlength="32" autocomplete="username" required placeholder="cool_username"></label>
+      <label class="field"><span>E-mail</span><input name="email" type="email" maxlength="255" autocomplete="email" required placeholder="cool_email@gmail.com"></label>
+      <label class="field"><span>Телефон (необязательно)</span><input name="phone" maxlength="15" autocomplete="tel" placeholder="+79281001010"></label>
+      <label class="field"><span>Пароль</span><input name="password" type="password" minlength="6" maxlength="72" autocomplete="new-password" required placeholder="от 6 символов"></label>
+      <div class="form-error" id="regError" hidden></div>
+      <button class="btn btn-solid btn-block" type="submit">Создать аккаунт</button>
+    </form>
+    <div class="modal-foot">Уже есть аккаунт? <button type="button" class="link" data-switch="login">Войти</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const API = '/api/v1';
+const PROFILE_URL = location.protocol === 'file:' ? 'profile.html' : '/profile/';
+
+const backdrop      = document.getElementById('backdrop');
+const loginForm     = document.getElementById('loginForm');
+const registerForm  = document.getElementById('registerForm');
+const loginError    = document.getElementById('loginError');
+const regError      = document.getElementById('regError');
+const headerNav     = document.getElementById('headerNav');
+const heroActions   = document.getElementById('heroActions');
+
+/* --- проверка авторизации: пробуем обновить токен по refresh-cookie --- */
+async function checkAuth(){
+  let authed = false;
+  try{
+    const res = await fetch(`${API}/auth/refresh/`, { method:'POST' }); // cookie уйдёт автоматически
+    if (res.ok){
+      const data = await res.json().catch(() => null);
+      if (data && data.access_token){
+        authed = true;
+        try{ sessionStorage.setItem('finapp_access', data.access_token); }catch(_){}
+      }
+    }
+  }catch(_){ /* API недоступен — показываем гостевой режим */ }
+  renderNav(authed);
+}
+
+function renderNav(authed){
+  if (authed){
+    headerNav.innerHTML   = `<a class="btn btn-solid" href="${PROFILE_URL}">Профиль</a>`;
+    heroActions.innerHTML = `<a class="btn btn-solid" href="${PROFILE_URL}">Открыть профиль</a>`;
+  } else {
+    headerNav.innerHTML = `
+      <button class="btn" data-open="login">Вход</button>
+      <button class="btn btn-solid" data-open="register">Регистрация</button>`;
+    heroActions.innerHTML = `
+      <button class="btn btn-solid" data-open="register">Создать аккаунт</button>
+      <button class="btn" data-open="login">Войти</button>`;
+  }
+}
+
+/* --- модалки --- */
+function openModal(name){
+  backdrop.hidden = false;
+  document.getElementById('loginModal').hidden    = name !== 'login';
+  document.getElementById('registerModal').hidden = name !== 'register';
+  loginError.hidden = true; regError.hidden = true;
+  const form = name === 'login' ? loginForm : registerForm;
+  setTimeout(() => { const i = form.querySelector('input'); if (i) i.focus(); }, 40);
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  backdrop.hidden = true;
+  document.body.style.overflow = '';
+}
+function showError(el, msg){ el.textContent = msg; el.hidden = false; }
+function setBusy(form, busy){
+  const btn = form.querySelector('[type="submit"]');
+  if (!btn) return;
+  btn.dataset.label = btn.dataset.label || btn.textContent;
+  btn.disabled = busy;
+  btn.textContent = busy ? 'Отправка…' : btn.dataset.label;
+}
+
+document.addEventListener('click', e => {
+  const opener = e.target.closest('[data-open]');
+  if (opener){ openModal(opener.dataset.open); return; }
+  if (e.target.closest('[data-close]')){ closeModal(); return; }
+  const sw = e.target.closest('[data-switch]');
+  if (sw){ openModal(sw.dataset.switch); return; }
+  if (e.target === backdrop) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !backdrop.hidden) closeModal(); });
+
+/* --- регистрация --- */
+registerForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  regError.hidden = true;
+  const f = e.target;
+  const username = f.username.value.trim();
+  const email    = f.email.value.trim();
+  const password = f.password.value;
+  const phone    = f.phone.value.trim();
+
+  if (username.length < 3 || username.length > 32)          return showError(regError, 'Имя пользователя: от 3 до 32 символов');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) return showError(regError, 'Введите корректный e-mail');
+  if (password.length < 6 || password.length > 72)          return showError(regError, 'Пароль: от 6 до 72 символов');
+  if (phone && !/^\+?\d{7,15}$/.test(phone))                return showError(regError, 'Телефон: 7–15 цифр, можно с «+»');
+
+  const payload = { username, email, password };
+  if (phone) payload.phone_number = phone;
+
+  setBusy(f, true);
+  try{
+    const res = await fetch(`${API}/auth/register/`, {
+      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload)
+    });
+    if (res.ok){
+      const data = await res.json().catch(() => null);
+      if (data && data.access_token){ try{ sessionStorage.setItem('finapp_access', data.access_token); }catch(_){} }
+      window.location.href = PROFILE_URL;
+      return;
+    }
+    const err = await res.json().catch(() => ({}));
+    showError(regError, err.message || err.error || `Ошибка регистрации (${res.status})`);
+  }catch(_){
+    showError(regError, 'Не удалось связаться с сервером');
+  }finally{ setBusy(f, false); }
+});
+
+/* --- вход --- */
+loginForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  loginError.hidden = true;
+  const f = e.target;
+  const username = f.username.value.trim();
+  const password = f.password.value;
+  if (!username || !password) return showError(loginError, 'Заполните все поля');
+
+  setBusy(f, true);
+  try{
+    const res = await fetch(`${API}/auth/login/`, {
+      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ username, password })
+    });
+    if (res.ok){
+      const data = await res.json().catch(() => null);
+      if (data && data.access_token){ try{ sessionStorage.setItem('finapp_access', data.access_token); }catch(_){} }
+      window.location.href = PROFILE_URL;
+      return;
+    }
+    const err = await res.json().catch(() => ({}));
+    showError(loginError, err.message || err.error ||
+      (res.status === 401 ? 'Неверное имя пользователя или пароль' : `Ошибка входа (${res.status})`));
+  }catch(_){
+    showError(loginError, 'Не удалось связаться с сервером');
+  }finally{ setBusy(f, false); }
+});
+
+checkAuth();
+})();
+</script>
+</body>
+</html>

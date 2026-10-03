@@ -1,0 +1,928 @@
+basePath: /api/v1
+definitions:
+  github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string:
+    properties:
+      set:
+        type: boolean
+      value:
+        type: string
+    type: object
+  internal_features_auth_transport_http.CreateUserRequest:
+    properties:
+      email:
+        example: cool_email@gmail.com
+        maxLength: 255
+        minLength: 3
+        type: string
+      password:
+        example: cool_safe_password
+        maxLength: 72
+        minLength: 6
+        type: string
+      phone_number:
+        example: "+79281001010"
+        maxLength: 15
+        minLength: 7
+        type: string
+      username:
+        example: cool_username
+        maxLength: 32
+        minLength: 3
+        type: string
+    type: object
+  internal_features_auth_transport_http.CreateUserResponse:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_auth_transport_http.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  internal_features_auth_transport_http.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  internal_features_auth_transport_http.RegisterUserResponse:
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+      user:
+        $ref: '#/definitions/internal_features_auth_transport_http.CreateUserResponse'
+    type: object
+  internal_features_income_transport_http.CreateIncomeRequest:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      status:
+        type: string
+      title:
+        maxLength: 100
+        minLength: 1
+        type: string
+      user_id:
+        type: integer
+      value:
+        example: "1999"
+        maxLength: 999999999
+        minLength: 0
+        type: string
+    required:
+    - description
+    - status
+    - title
+    - user_id
+    - value
+    type: object
+  internal_features_income_transport_http.CreateIncomeResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+      version:
+        type: integer
+    type: object
+  internal_features_income_transport_http.GetIncomeResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+      version:
+        type: integer
+    type: object
+  internal_features_income_transport_http.PatchIncomeRequest:
+    properties:
+      description:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      status:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      title:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      value:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+    type: object
+  internal_features_income_transport_http.PatchIncomeResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+      version:
+        type: integer
+    type: object
+  internal_features_spendings_transport_http.CreateSpendingRequest:
+    properties:
+      category:
+        maxLength: 100
+        type: string
+      description:
+        maxLength: 500
+        type: string
+      status:
+        type: string
+      title:
+        maxLength: 100
+        minLength: 1
+        type: string
+      user_id:
+        type: integer
+      value:
+        maxLength: 999999999
+        minLength: 0
+        type: string
+    required:
+    - description
+    - status
+    - title
+    - user_id
+    - value
+    type: object
+  internal_features_spendings_transport_http.CreateSpendingResponse:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+      version:
+        type: integer
+    type: object
+  internal_features_spendings_transport_http.GetSpendingResponse:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+      version:
+        type: integer
+    type: object
+  internal_features_spendings_transport_http.PatchSpendingRequest:
+    properties:
+      category:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      description:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      status:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      title:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      value:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+    type: object
+  internal_features_spendings_transport_http.PatchSpendingResponse:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.CreateUserRequest:
+    properties:
+      email:
+        example: cool_email@gmail.com
+        maxLength: 255
+        minLength: 3
+        type: string
+      password:
+        example: cool_safe_password
+        maxLength: 72
+        minLength: 6
+        type: string
+      phone_number:
+        example: "+79281001010"
+        maxLength: 15
+        minLength: 7
+        type: string
+      username:
+        example: cool_username
+        maxLength: 32
+        minLength: 3
+        type: string
+    type: object
+  internal_features_users_transport_http.CreateUserResponse:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.GetUserResponse:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.PatchUserRequest:
+    properties:
+      email:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      password:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+      phone_number:
+        $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_types.Nullable-string'
+    required:
+    - email
+    - password
+    type: object
+  internal_features_users_transport_http.PatchUserResponse:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_users_transport_http.UserResponseDTO:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+    type: object
+info:
+  contact:
+    email: qury53@yandex.ru
+    name: qury53
+  description: FINANCIAL APPLICATION FOR TRACKING YOUR FINANCE
+  title: Golang FINAPP API
+  version: "1.0"
+paths:
+  /auth/login/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: LoginUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_auth_transport_http.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in user
+          schema:
+            $ref: '#/definitions/internal_features_auth_transport_http.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Login user
+      tags:
+      - auth
+  /auth/refresh/:
+    post:
+      consumes:
+      - application/json
+      description: Uses refresh cookie to issue a new access token and rotate the
+        refresh cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully refreshed tokens
+          schema:
+            $ref: '#/definitions/internal_features_auth_transport_http.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - auth
+  /auth/register/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: CreateUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_auth_transport_http.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully registered user
+          schema:
+            $ref: '#/definitions/internal_features_auth_transport_http.RegisterUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: creates user
+      tags:
+      - auth
+  /income/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got incomes
+          schema:
+            $ref: '#/definitions/internal_features_income_transport_http.GetIncomeResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets incomes
+      tags:
+      - income
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: CreateIncome request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_income_transport_http.CreateIncomeRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created income
+          schema:
+            $ref: '#/definitions/internal_features_income_transport_http.CreateIncomeResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: NotFound
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: creates income
+      tags:
+      - income
+  /income/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Income ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete income
+      tags:
+      - income
+    get:
+      parameters:
+      - description: Income ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got income
+          schema:
+            $ref: '#/definitions/internal_features_income_transport_http.GetIncomeResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets income
+      tags:
+      - income
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Income ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatchRequestBody
+        in: body
+        name: patch
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_income_transport_http.PatchIncomeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patched income response
+          schema:
+            $ref: '#/definitions/internal_features_income_transport_http.PatchIncomeResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Patches income
+      tags:
+      - income
+  /spending/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got spending
+          schema:
+            $ref: '#/definitions/internal_features_spendings_transport_http.GetSpendingResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets spending
+      tags:
+      - spending
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: CreateSpending request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_spendings_transport_http.CreateSpendingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created spending
+          schema:
+            $ref: '#/definitions/internal_features_spendings_transport_http.CreateSpendingResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: NotFound
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      tags:
+      - spending
+  /spending/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Spending ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete spending
+      tags:
+      - spending
+    get:
+      parameters:
+      - description: Spending ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got spending
+          schema:
+            $ref: '#/definitions/internal_features_spendings_transport_http.GetSpendingResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets spending
+      tags:
+      - spending
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Spending ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatchRequestBody
+        in: body
+        name: patch
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_spendings_transport_http.PatchSpendingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patched spending response
+          schema:
+            $ref: '#/definitions/internal_features_spendings_transport_http.PatchSpendingResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Patches spending
+      tags:
+      - spending
+  /users/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got users
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_users_transport_http.UserResponseDTO'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: CreateUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.CreateUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: creates user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete user
+      tags:
+      - users
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.GetUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets user
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatchRequestBody
+        in: body
+        name: patch
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patched user response
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.PatchUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_finapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Patches user
+      tags:
+      - users
+swagger: "2.0"

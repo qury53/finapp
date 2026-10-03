@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/go-playground/validator/v10"
-	core_http_errors "github.com/qury53/finapp/internal/core/transport/http/errors"
+	core_errors "github.com/qury53/finapp/internal/core/transport/http/errors"
 )
 
 var requestValidator = validator.New()
@@ -15,11 +16,9 @@ type validatable interface {
 	Validate() error
 }
 
-// декодирует и валидирует запрос, если со структурой что-то не так, то
-// возвращается core_http_errors.ErrInvalidArgument
 func DecodeAndValidate(r *http.Request, dest any) error {
 	if err := json.NewDecoder(r.Body).Decode(dest); err != nil {
-		return fmt.Errorf("failed to decode: %v: %w", err, core_http_errors.ErrInvalidArgument)
+		return fmt.Errorf("failed to decode: %v: %w", err, core_errors.ErrInvalidArgument)
 	}
 
 	v, ok := dest.(validatable)
@@ -32,8 +31,14 @@ func DecodeAndValidate(r *http.Request, dest any) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf("request validation error: %v: %w", err, core_http_errors.ErrInvalidArgument)
+		return fmt.Errorf("request validation error: %v: %w", err, core_errors.ErrInvalidArgument)
 	}
 
 	return nil
+}
+
+func IsE164(phone string) bool {
+	// Standard E.164 regex: ^\+[1-9]\d{1,14}$
+	re := regexp.MustCompile(`^\+[1-9]\d{1,14}$`)
+	return re.MatchString(phone)
 }

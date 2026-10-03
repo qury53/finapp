@@ -19,7 +19,7 @@ type loggerContext struct{}
 var loggerContextKey = loggerContext{}
 var defaultLogger = Logger{Logger: slog.Default()}
 
-// Ну создает логгер который пишет в stdout и logfile
+// создает логгер который пишет в stdout и logfile
 func NewLogger(config *Config) (*Logger, error) {
 	if err := os.MkdirAll(config.LogFolder, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create log folder: %w", err)

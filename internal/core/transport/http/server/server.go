@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/qury53/finapp/docs"
 	core_logger "github.com/qury53/finapp/internal/core/logger"
 	transport_http_middleware "github.com/qury53/finapp/internal/core/transport/http/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // структура HTTP сервера
@@ -40,6 +42,34 @@ func (h *HTTPServer) RegisterAPIRouters(routers ...APIRouter) {
 	}
 }
 
+func (h *HTTPServer) RegisterRoutes(
+	routes ...Route,
+) {
+	for _, route := range routes {
+		r := route.WithMiddleware()
+		h.mux.Handle(fmt.Sprintf("%s %s", route.Method, route.Path), r)
+	}
+}
+
+func (s *HTTPServer) RegisterSwagger() {
+	s.mux.Handle(
+		"/swagger/",
+		httpSwagger.Handler(
+			httpSwagger.URL("/swagger/doc.json"),
+		),
+	)
+
+	s.mux.HandleFunc(
+		"/swagger/doc.json",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+
+			_, _ = w.Write([]byte(docs.SwaggerInfo.ReadDoc()))
+		},
+	)
+}
+
 // Запуск HTTP сервера
 func (h *HTTPServer) Run(ctx context.Context) error {
 	mux := transport_http_middleware.ChainMiddleware(h.mux, h.middlewares...)
@@ -59,10 +89,11 @@ func (h *HTTPServer) Run(ctx context.Context) error {
 
 	select {
 	case <-ctx.Done():
-		shutdownCtx, cancel := context.WithTimeout(ctx, h.config.ShutdownTime)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), h.config.ShutdownTime)
 		defer cancel()
 
 		if err := server.Shutdown(shutdownCtx); err != nil {
+			_ = server.Close()
 			return fmt.Errorf("failed to shut down server: %w", err)
 		}
 

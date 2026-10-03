@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>FINAPP — Профиль</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2317171a'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='15' fill='%23a0a0a6' text-anchor='middle'%3EF%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0e0e0f; --bg-soft:#141416; --panel:#17171a; --panel-2:#1e1e22;
+  --border:#26262b; --border-2:#34343a;
+  --text:#e9e9eb; --text-2:#9b9ba2; --text-3:#67676f;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.55;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;
+}
+::selection{background:#3a3a40;color:#fff}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+
+/* ---------- шапка / кнопки ---------- */
+.header{position:sticky;top:0;z-index:50;background:rgba(14,14,15,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-weight:700;font-size:18px;letter-spacing:.12em}
+.logo span{color:var(--text-3)}
+.header-user{display:flex;align-items:baseline;gap:10px;min-width:0}
+.header-label{font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
+.header-username{font-family:var(--mono);font-size:14px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 18px;border-radius:8px;
+  border:1px solid var(--border-2);background:transparent;color:var(--text);font-size:14px;cursor:pointer;
+  transition:background .15s,border-color .15s;user-select:none}
+.btn:hover{background:var(--panel-2);border-color:var(--text-2)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+.btn-solid{background:var(--text);border-color:var(--text);color:#0e0e0f;font-weight:600}
+.btn-solid:hover{background:#d6d6da;border-color:#d6d6da}
+.btn-sm{padding:6px 12px;font-size:13px}
+
+/* ---------- раскладка ---------- */
+.layout{max-width:1100px;margin:0 auto;padding:28px 24px 64px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start}
+.content{min-width:0}
+.sidebar{position:sticky;top:88px;display:flex;flex-direction:column;gap:16px}
+.side-block{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:14px}
+.side-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-3);margin-bottom:10px;padding:0 4px}
+.side-btn{display:block;width:100%;text-align:left;background:none;border:none;border-left:2px solid transparent;
+  color:var(--text-2);padding:9px 12px;border-radius:0 8px 8px 0;cursor:pointer;font-size:14px;margin-bottom:2px;transition:.15s}
+.side-btn:hover{color:var(--text);background:var(--panel-2)}
+.side-btn.active{color:var(--text);border-left-color:var(--text);background:var(--panel-2)}
+.side-user .u-name{font-weight:600}
+.side-user .u-line{font-size:13px;color:var(--text-2);margin-top:4px;word-break:break-all}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;order:-1}
+}
+
+/* ---------- представления ---------- */
+.view-title{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.title-period{font-size:13px;font-weight:400;color:var(--text-3);margin-left:6px;letter-spacing:0}
+.view-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.view-head .view-title{margin:0}
+#view-stats .view-title{margin-bottom:20px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:14px}
+.stat{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:18px}
+.stat-label{font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.stat-value{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.01em}
+
+.card{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:18px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text-2)}
+
+.cat-row{margin-bottom:14px}
+.cat-row:last-child{margin-bottom:0}
+.cat-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px}
+.cat-val{font-family:var(--mono);color:var(--text-2)}
+.cat-bar{height:6px;background:var(--bg-soft);border-radius:4px;overflow:hidden}
+.cat-bar i{display:block;height:100%;background:linear-gradient(90deg,#3a3a40,#55555c);border-radius:4px}
+
+/* ---------- список записей ---------- */
+.list{border:1px solid var(--border);border-radius:12px;background:var(--panel);overflow:hidden}
+.item{display:flex;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);transition:background .15s}
+.item:last-child{border-bottom:none}
+.item:hover{background:var(--bg-soft)}
+.item-title{font-weight:600;font-size:14.5px}
+.item-desc{font-size:13px;color:var(--text-2);margin-top:3px}
+.item-meta{font-size:12px;color:var(--text-3);margin-top:5px;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.item-side{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.item-value{font-family:var(--mono);font-size:15px}
+.item-del{background:none;border:1px solid transparent;color:var(--text-3);cursor:pointer;font-size:15px;width:24px;height:24px;line-height:1;border-radius:6px}
+.item-del:hover{color:var(--text);border-color:var(--border-2)}
+.empty{padding:36px;text-align:center;color:var(--text-3);font-size:14px}
+.loading{color:var(--text-3);padding:24px;font-size:14px}
+.tag{display:inline-block;border:1px solid var(--border-2);border-radius:999px;padding:0 8px;
+  font-size:11px;line-height:18px;color:var(--text-2);letter-spacing:.04em;white-space:nowrap}
+
+/* ---------- форма добавления ---------- */
+.add-form{border:1px dashed var(--border-2);border-radius:12px;padding:18px;margin-bottom:16px;background:var(--bg-soft)}
+.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media (max-width:640px){.add-grid{grid-template-columns:1fr}}
+.field{display:block;margin-bottom:12px}
+.field span{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.field input{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border-2);border-radius:8px;
+  color:var(--text);font:inherit;outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--text-2)}
+.field input::placeholder{color:var(--text-3)}
+.field select{width:100%;padding:10px 36px 10px 12px;background:var(--bg);border:1px solid var(--border-2);border-radius:8px;
+  color:var(--text);font:inherit;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;transition:border-color .15s}
+.field select:hover,.field select:focus{border-color:var(--text-2)}
+.field select option{background:var(--panel);color:var(--text)}
+.select-wrap{position:relative;display:block}
+.select-wrap::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-6px;
+  border-right:1.5px solid var(--text-2);border-bottom:1.5px solid var(--text-2);
+  transform:rotate(45deg);pointer-events:none}
+.add-actions{display:flex;gap:10px;margin-top:4px}
+
+/* ---------- прочее ---------- */
+.toast{position:fixed;right:20px;bottom:20px;z-index:200;background:var(--panel-2);border:1px solid var(--border-2);
+  color:var(--text);padding:12px 16px;border-radius:10px;font-size:14px;box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.fatal{max-width:520px;margin:60px auto;padding:32px;border:1px solid var(--border);border-radius:14px;background:var(--panel);text-align:center}
+.fatal h2{font-size:18px;margin-bottom:8px}
+.fatal p{color:var(--text-2);font-size:14px}
+.fatal .btn{margin-top:18px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="/">FIN<span>APP</span></a>
+    <div class="header-user">
+      <span class="header-label">Профиль</span>
+      <span class="header-username" id="headerUsername">…</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout" id="layout">
+  <main class="content" id="content">
+
+    <!-- статистика -->
+    <section class="view" id="view-stats">
+      <h2 class="view-title">Статистика<span class="title-period" id="statsPeriod">за месяц</span></h2>
+      <div class="stats-grid" id="statsCards"><div class="loading">Загрузка…</div></div>
+      <div class="card" id="catCard" hidden>
+        <h3 class="card-title" id="catCardTitle">Расходы по категориям — месяц</h3>
+        <div id="catBars"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title" id="recentCardTitle">Последние операции — месяц</h3>
+        <div id="recentList"><div class="loading">Загрузка…</div></div>
+      </div>
+    </section>
+
+    <!-- доходы -->
+    <section class="view" id="view-income" hidden>
+      <div class="view-head">
+        <h2 class="view-title">Доходы<span class="title-period" id="incomePeriod">за месяц</span></h2>
+        <button class="btn btn-sm" id="incomeAddToggle">+ Добавить</button>
+      </div>
+      <form class="add-form" id="incomeForm" hidden novalidate>
+        <div class="add-grid">
+          <label class="field"><span>Название</span><input name="title" maxlength="100" required placeholder="Например: Зарплата"></label>
+          <label class="field"><span>Сумма</span><input name="value" inputmode="decimal" required placeholder="1999"></label>
+          <label class="field"><span>Статус</span>
+            <span class="select-wrap">
+              <select name="status">
+                <option value="oncely" selected>Разово</option>
+                <option value="weekly">Еженедельно</option>
+                <option value="monthly">Ежемесячно</option>
+              </select>
+            </span>
+          </label>
+          <label class="field"><span>Описание</span><input name="description" maxlength="500" placeholder="Необязательно"></label>
+        </div>
+        <div class="add-actions">
+          <button class="btn btn-solid btn-sm" type="submit">Сохранить</button>
+          <button class="btn btn-sm" type="button" data-hide="incomeForm">Отмена</button>
+        </div>
+      </form>
+      <div class="list" id="incomeList"><div class="loading">Загрузка…</div></div>
+    </section>
+
+    <!-- расходы -->
+    <section class="view" id="view-spending" hidden>
+      <div class="view-head">
+        <h2 class="view-title">Расходы<span class="title-period" id="spendingPeriod">за месяц</span></h2>
+        <button class="btn btn-sm" id="spendingAddToggle">+ Добавить</button>
+      </div>
+      <form class="add-form" id="spendingForm" hidden novalidate>
+        <div class="add-grid">
+          <label class="field"><span>Название</span><input name="title" maxlength="100" required placeholder="Например: Продукты"></label>
+          <label class="field"><span>Сумма</span><input name="value" inputmode="decimal" required placeholder="1250"></label>
+          <label class="field"><span>Категория</span><input name="category" maxlength="100" placeholder="супермаркет"></label>
+          <label class="field"><span>Статус</span>
+            <span class="select-wrap">
+              <select name="status">
+                <option value="oncely" selected>Разово</option>
+                <option value="weekly">Еженедельно</option>
+                <option value="monthly">Ежемесячно</option>
+              </select>
+            </span>
+          </label>
+          <label class="field" style="grid-column:1/-1"><span>Описание</span><input name="description" maxlength="500" placeholder="Необязательно"></label>
+        </div>
+        <div class="add-actions">
+          <button class="btn btn-solid btn-sm" type="submit">Сохранить</button>
+          <button class="btn btn-sm" type="button" data-hide="spendingForm">Отмена</button>
+        </div>
+      </form>
+      <div class="list" id="spendingList"><div class="loading">Загрузка…</div></div>
+    </section>
+
+  </main>
+
+  <!-- правая панель -->
+  <aside class="sidebar">
+    <div class="side-block">
+      <div class="side-label">Период</div>
+      <button class="side-btn" data-period="day">День</button>
+      <button class="side-btn" data-period="week">Неделя</button>
+      <button class="side-btn active" data-period="month">Месяц</button>
+      <button class="side-btn" data-period="year">Год</button>
+    </div>
+    <div class="side-block">
+      <div class="side-label">Просмотр</div>
+      <button class="side-btn active" data-view="stats">Статистика</button>
+      <button class="side-btn" data-view="income">Доходы</button>
+      <button class="side-btn" data-view="spending">Расходы</button>
+    </div>
+    <div class="side-block">
+      <div class="side-label">Аккаунт</div>
+      <div class="side-user" id="sideUserInfo"><div class="loading" style="padding:0">Загрузка…</div></div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ======================= НАСТРОЙКИ =======================
+   Один origin с API — оставьте ''. Иначе укажите origin бэкенда:  */
+const API_ORIGIN = '';                    // ← '' или 'http://localhost:8080'
+const API        = API_ORIGIN + '/api/v1';
+
+const INDEX_URL = location.protocol === 'file:' ? 'index.html' : '/';
+
+/* статусы записей */
+const STATUSES = [
+  { value: 'oncely',  label: 'Разово' },
+  { value: 'weekly',  label: 'Еженедельно' },
+  { value: 'monthly', label: 'Ежемесячно' },
+];
+const STATUS_LABELS = Object.fromEntries(STATUSES.map(s => [s.value, s.label]));
+const statusLabel   = s => STATUS_LABELS[s] || s;
+
+/* периоды: value — то, что уходит в query ?period= */
+const PERIODS = [
+  { value: 'day',   label: 'День',   word: 'день'   },
+  { value: 'week',  label: 'Неделя', word: 'неделю' },
+  { value: 'month', label: 'Месяц',  word: 'месяц'  },
+  { value: 'year',  label: 'Год',    word: 'год'    },
+];
+const PERIOD_WORDS = Object.fromEntries(PERIODS.map(p => [p.value, p.word]));
+
+/* период из URL (?period=week) или месяц по умолчанию */
+const urlPeriod  = new URLSearchParams(location.search).get('period');
+const INIT_PERIOD = PERIOD_WORDS[urlPeriod] ? urlPeriod : 'month';
+
+const state = {
+  token: null, tokenType: 'Bearer',
+  userId: null, user: null,
+  incomes: [], spendings: [],
+  view: 'stats',
+  period: INIT_PERIOD,
+};
+
+/* ---------- утилиты ---------- */
+const $ = id => document.getElementById(id);
+
+function parseJwt(token){
+  try{
+    const b = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    const json = decodeURIComponent(atob(b).split('').map(c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(json);
+  }catch{ return {}; }
+}
+const num    = v => typeof v === 'number' ? v : (parseFloat(String(v).replace(',', '.')) || 0);
+const byDate = (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0);
+const esc    = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtNum = n => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(n);
+function fmtDate(iso){
+  if (!iso) return '';
+  const d = new Date(iso);
+  return isNaN(d) ? String(iso) : d.toLocaleDateString('ru-RU', { day:'2-digit', month:'short', year:'numeric' });
+}
+const periodWord = () => PERIOD_WORDS[state.period] || state.period;
+
+/* сколько дней в выбранном периоде — для среднего «в день» */
+function daysInPeriod(p){
+  const now = new Date();
+  if (p === 'day')   return 1;
+  if (p === 'week')  return 7;
+  if (p === 'month') return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const y = now.getFullYear();
+  return ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365;
+}
+
+let toastTimer;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+}
+
+/* ---------- http ---------- */
+function authHeaders(extra = {}){
+  const h = { 'Content-Type': 'application/json', 'Accept': 'application/json', ...extra };
+  if (state.token) h['Authorization'] = `${state.tokenType} ${state.token}`.trim();
+  return h;
+}
+
+async function apiFetch(url, opts = {}){
+  const doReq = () => fetch(url, { ...opts, credentials: 'include', headers: authHeaders(opts.headers) });
+  let res = await doReq();
+  if (res.status === 401){
+    const r = await fetch(`${API}/auth/refresh/`, { method:'POST', credentials:'include' });
+    if (!r.ok){ location.replace(INDEX_URL); throw new Error('unauthorized'); }
+    const d = await r.json().catch(() => ({}));
+    const tk = d.access_token || d.accessToken || d.token;
+    if (tk){
+      state.token = tk;
+      if (d.token_type) state.tokenType = d.token_type;
+      res = await doReq();
+    }
+  }
+  return res;
+}
+async function safeJson(res){
+  if (!res.ok){ toast(`Ошибка загрузки данных (${res.status})`); return []; }
+  return res.json().catch(() => []);
+}
+function normalizeList(d){
+  if (Array.isArray(d)) return d;
+  if (d && typeof d === 'object'){
+    for (const k of ['items','results','data','list']) if (Array.isArray(d[k])) return d[k];
+    if (d.id != null) return [d];
+  }
+  return [];
+}
+
+/* ---------- инициализация ---------- */
+async function init(){
+  let res;
+  try{
+    res = await fetch(`${API}/auth/refresh/`, {
+      method:'POST', credentials:'include', headers:{ 'Accept':'application/json' }
+    });
+  }catch(err){
+    fatal('Не удалось связаться с API. Если фронт и API на разных портах — задайте API_ORIGIN в начале скрипта и включите на бэкенде CORS с credentials.');
+    return;
+  }
+
+  if (!res.ok){ location.replace(INDEX_URL); return; }
+
+  const data  = await res.json().catch(() => ({}));
+  state.token = data.access_token || data.accessToken || data.token || null;
+  if (data.token_type) state.tokenType = data.token_type;
+
+  const claims = parseJwt(state.token || '');
+  state.userId = Number(claims.UserID ?? claims.user_id ?? claims.id ?? claims.sub ?? claims.uid) || null;
+
+  if (!state.userId && claims.username){
+    try{
+      const r = await apiFetch(`${API}/users/`);
+      if (r.ok){
+        const users = normalizeList(await r.json());
+        const me = users.find(u => u.username === claims.username);
+        if (me) state.userId = me.id;
+      }
+    }catch(_){}
+  }
+
+  if (!state.userId){ location.replace(INDEX_URL); return; }
+
+  applyPeriodLabels();
+  await loadUser();
+  await loadRecords();
+}
+
+/* данные пользователя не зависят от периода — грузим один раз */
+async function loadUser(){
+  try{
+    const r = await apiFetch(`${API}/users/${state.userId}`);
+    if (r.ok) state.user = await r.json().catch(() => null);
+  }catch(_){}
+  renderUser();
+}
+
+/* доходы/расходы зависят от периода — перезапрашиваются при смене */
+async function loadRecords(){
+  setListsLoading();
+  try{
+    const [iRes, sRes] = await Promise.all([
+      apiFetch(`${API}/income/?user_id=${state.userId}&period=${state.period}`),
+      apiFetch(`${API}/spending/?user_id=${state.userId}&period=${state.period}`),
+    ]);
+    state.incomes   = normalizeList(await safeJson(iRes)).sort(byDate);
+    state.spendings = normalizeList(await safeJson(sRes)).sort(byDate);
+  }catch(e){ toast('Не удалось загрузить данные'); }
+  renderAll();
+}
+
+function setListsLoading(){
+  $('statsCards').innerHTML    = '<div class="loading">Загрузка…</div>';
+  $('recentList').innerHTML    = '<div class="loading">Загрузка…</div>';
+  $('incomeList').innerHTML    = '<div class="loading">Загрузка…</div>';
+  $('spendingList').innerHTML  = '<div class="loading">Загрузка…</div>';
+  $('catCard').hidden = true;
+}
+
+function applyPeriodLabels(){
+  const w = periodWord();
+  $('statsPeriod').textContent    = 'за ' + w;
+  $('incomePeriod').textContent   = 'за ' + w;
+  $('spendingPeriod').textContent = 'за ' + w;
+  $('catCardTitle').textContent   = 'Расходы по категориям — ' + w;
+  $('recentCardTitle').textContent = 'Последние операции — ' + w;
+}
+
+function fatal(msg){
+  const layout = $('layout');
+  layout.style.display = 'block';
+  layout.innerHTML = `
+    <div class="fatal">
+      <h2>Проблема с подключением</h2>
+      <p>${esc(msg)}</p>
+      <a class="btn" href="${INDEX_URL}">Вернуться на главную</a>
+    </div>`;
+}
+
+/* ---------- рендер ---------- */
+function renderUser(){
+  const u = state.user || {};
+  const name = u.username || 'Пользователь';
+  $('headerUsername').textContent = name;
+  $('sideUserInfo').innerHTML = `
+    <div class="u-name">${esc(name)}</div>
+    ${u.email       ? `<div class="u-line">${esc(u.email)}</div>` : ''}
+    ${u.phoneNumber ? `<div class="u-line">${esc(u.phoneNumber)}</div>` : ''}
+    <div class="u-line">ID: ${esc(state.userId)}</div>
+    ${u.createdAt   ? `<div class="u-line">С нами с ${esc(fmtDate(u.createdAt))}</div>` : ''}`;
+}
+
+const stat = (label, value) => `
+  <div class="stat">
+    <div class="stat-label">${esc(label)}</div>
+    <div class="stat-value">${esc(value)}</div>
+  </div>`;
+
+function renderStats(){
+  const inc = state.incomes.reduce((s, x) => s + num(x.value), 0);
+  const sp  = state.spendings.reduce((s, x) => s + num(x.value), 0);
+  const w   = periodWord();
+
+  const cards = [
+    stat('Доходы за ' + w,   fmtNum(inc)),
+    stat('Расходы за ' + w,  fmtNum(sp)),
+    stat('Баланс за ' + w,   fmtNum(inc - sp)),
+    stat('Операций',         String(state.incomes.length + state.spendings.length)),
+    stat('Средний доход',    fmtNum(state.incomes.length   ? inc / state.incomes.length   : 0)),
+    stat('Средний расход',   fmtNum(state.spendings.length ? sp  / state.spendings.length : 0)),
+  ];
+  if (state.period !== 'day'){
+    cards.push(stat('В среднем в день', fmtNum((inc - sp) / daysInPeriod(state.period))));
+  }
+  $('statsCards').innerHTML = cards.join('');
+
+  const byCat = {};
+  state.spendings.forEach(x => {
+    const c = (x.category && String(x.category).trim()) || 'Без категории';
+    byCat[c] = (byCat[c] || 0) + num(x.value);
+  });
+  const rows = Object.entries(byCat).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  if (rows.length){
+    $('catCard').hidden = false;
+    const max = rows[0][1] || 1;
+    $('catBars').innerHTML = rows.map(([c, v]) => `
+      <div class="cat-row">
+        <div class="cat-head"><span>${esc(c)}</span><span class="cat-val">${fmtNum(v)}</span></div>
+        <div class="cat-bar"><i style="width:${Math.max(4, Math.round(v / max * 100))}%"></i></div>
+      </div>`).join('');
+  } else {
+    $('catCard').hidden = true;
+  }
+
+  const merged = [
+    ...state.incomes.map(x => ({ ...x, _kind: 'income' })),
+    ...state.spendings.map(x => ({ ...x, _kind: 'spending' })),
+  ].sort(byDate).slice(0, 6);
+  $('recentList').innerHTML = merged.length
+    ? merged.map(x => itemHTML(x, x._kind, { del: false })).join('')
+    : `<div class="empty">Нет операций за ${esc(w)}</div>`;
+}
+
+function itemHTML(x, kind, opts = {}){
+  const del = opts.del !== false;
+  const val = num(x.value);
+  const sign = kind === 'income' ? '+' : '−';
+  return `<div class="item">
+    <div class="item-main">
+      <div class="item-title">${esc(x.title || 'Без названия')}</div>
+      ${x.description ? `<div class="item-desc">${esc(x.description)}</div>` : ''}
+      <div class="item-meta">
+        ${x.status ? `<span class="tag">${esc(statusLabel(x.status))}</span>` : ''}
+        <span>${esc(fmtDate(x.created_at))}${x.category ? ' · ' + esc(x.category) : ''} · id ${esc(x.id)}</span>
+      </div>
+    </div>
+    <div class="item-side">
+      <div class="item-value">${sign} ${fmtNum(val)}</div>
+      ${del ? `<button class="item-del" data-del="${kind}" data-id="${esc(x.id)}" title="Удалить">×</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderList(el, items, kind){
+  el.innerHTML = items.length
+    ? items.map(x => itemHTML(x, kind)).join('')
+    : `<div class="empty">Нет записей за ${esc(periodWord())} — нажмите «+ Добавить».</div>`;
+}
+
+function renderAll(){
+  renderStats();
+  renderList($('incomeList'),   state.incomes,   'income');
+  renderList($('spendingList'), state.spendings, 'spending');
+}
+
+/* ---------- правая панель: период и раздел ---------- */
+document.querySelector('.sidebar').addEventListener('click', e => {
+  const pv = e.target.closest('[data-period]');
+  if (pv){
+    const p = pv.dataset.period;
+    if (p === state.period || !PERIOD_WORDS[p]) return;
+    state.period = p;
+    document.querySelectorAll('[data-period]').forEach(x => x.classList.toggle('active', x === pv));
+    /* синхронизируем ?period= в адресной строке, чтобы период переживал F5 */
+    try{
+      const u = new URL(location.href);
+      u.searchParams.set('period', p);
+      history.replaceState(null, '', u);
+    }catch(_){}
+    applyPeriodLabels();
+    loadRecords();
+    return;
+  }
+
+  const b = e.target.closest('[data-view]');
+  if (!b) return;
+  state.view = b.dataset.view;
+  document.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.view').forEach(v => { v.hidden = v.id !== 'view-' + state.view; });
+});
+
+/* ---------- удаление записи ---------- */
+ $('content').addEventListener('click', async e => {
+  const btn = e.target.closest('[data-del]');
+  if (!btn) return;
+  const kind = btn.dataset.del;
+  const id   = btn.dataset.id;
+  if (!confirm('Удалить эту запись?')) return;
+  btn.disabled = true;
+  try{
+    const res = await apiFetch(`${API}/${kind}/${id}`, { method: 'DELETE' });
+    if (res.ok || res.status === 204){
+      toast('Запись удалена');
+      await loadRecords(); // перезапрашиваем с текущим периодом
+    } else {
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || err.error || `Не удалось удалить (${res.status})`);
+      btn.disabled = false;
+    }
+  }catch{ toast('Ошибка сети'); btn.disabled = false; }
+});
+
+/* ---------- добавление записи ---------- */
+function toggleForm(id){
+  const f = $(id);
+  f.hidden = !f.hidden;
+  if (!f.hidden) f.querySelector('input[name="title"]').focus();
+}
+ $('incomeAddToggle').addEventListener('click', () => toggleForm('incomeForm'));
+ $('spendingAddToggle').addEventListener('click', () => toggleForm('spendingForm'));
+document.querySelectorAll('[data-hide]').forEach(b =>
+  b.addEventListener('click', () => { $(b.dataset.hide).hidden = true; }));
+
+async function handleAdd(kind, e){
+  e.preventDefault();
+  const f = e.target;
+  const btn = f.querySelector('[type="submit"]');
+  const payload = {
+    user_id:     state.userId,
+    title:       f.title.value.trim(),
+    value:       f.value.value.trim().replace(',', '.'),
+    status:      f.status.value,
+    description: f.description.value.trim(),
+  };
+  if (kind === 'spending') payload.category = f.category.value.trim();
+
+  if (!payload.title) return toast('Укажите название');
+  if (!/^\d+(\.\d{1,10})?$/.test(payload.value)) return toast('Укажите корректную сумму');
+  if (!STATUS_LABELS[payload.status]) return toast('Выберите корректный статус');
+
+  btn.disabled = true;
+  try{
+    const res = await apiFetch(`${API}/${kind}/`, { method:'POST', body: JSON.stringify(payload) });
+    if (res.ok){
+      f.reset();
+      f.hidden = true;
+      toast('Запись добавлена');
+      await loadRecords(); // запись появится, если попадает в текущий период
+    } else {
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || err.error || `Не удалось добавить (${res.status})`);
+    }
+  }catch{ toast('Ошибка сети'); }
+  finally{ btn.disabled = false; }
+}
+ $('incomeForm').addEventListener('submit', e => handleAdd('income', e));
+ $('spendingForm').addEventListener('submit', e => handleAdd('spending', e));
+
+init();
+})();
+</script>
+</body>
+</html>

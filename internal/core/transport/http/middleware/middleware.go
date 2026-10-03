@@ -2,10 +2,10 @@ package transport_http_middleware
 
 import "net/http"
 
-type Middlware func(http.Handler) http.Handler
+type Middleware func(http.Handler) http.Handler
 
 // Применяет мидлвари к http.Handler начиная с конца!!!
-func ChainMiddleware(h http.Handler, m ...Middlware) http.Handler {
+func ChainMiddleware(h http.Handler, m ...Middleware) http.Handler {
 	mLen := len(m)
 	if mLen == 0 {
 		return h
