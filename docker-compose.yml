@@ -9,7 +9,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ${PRJECT_ROOT}/out/redisdata:/data
+      - ${PROJECT_ROOT}/out/redisdata:/data
     deploy:
       resources:
         limits:

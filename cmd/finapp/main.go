@@ -9,6 +9,7 @@ import (
 
 	core_logger "github.com/qury53/finapp/internal/core/logger"
 	core_repository_pgx "github.com/qury53/finapp/internal/core/repository/postgres"
+	core_repository_redis "github.com/qury53/finapp/internal/core/repository/redis"
 	transport_http_middleware "github.com/qury53/finapp/internal/core/transport/http/middleware"
 	transport_http_server "github.com/qury53/finapp/internal/core/transport/http/server"
 	auth_service "github.com/qury53/finapp/internal/features/auth/service"
@@ -55,6 +56,17 @@ func main() {
 	//creating conn pool
 	slog.Debug("creating pool")
 	poolConfig := core_repository_pgx.NewConfigMust()
+	redisConfig := core_repository_redis.NewConfigMust()
+	redisClient, err := core_repository_redis.NewClient(ctx, redisConfig)
+	if err != nil {
+		logger.Error(
+			"failed to craete redisClient",
+			slog.String("error", err.Error()),
+		)
+
+		os.Exit(0)
+	}
+
 	pool, err := core_repository_pgx.NewConnectionPool(ctx, poolConfig)
 	if err != nil {
 		logger.Error("pool error", "error", err)
@@ -102,6 +114,7 @@ func main() {
 	//creating feature statistics
 	logger.Debug("creating statistics feature")
 	statisticsService := statistics_service.NewStatisticsService(
+		redisClient,
 		incomeRepository,
 		spendingRepository,
 		usersRepository,

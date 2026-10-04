@@ -17,7 +17,7 @@ func (c *Client) Timeout() time.Duration {
 	return c.timeout
 }
 
-func NewPool(ctx context.Context, config *Config) (*Client, error) {
+func NewClient(ctx context.Context, config *Config) (*Client, error) {
 	opts := redis.Options{
 		Addr:       config.Addr,
 		Password:   config.Password,

@@ -15,6 +15,7 @@ var validPeriods = map[string]struct{}{
 	"day":   {},
 	"week":  {},
 	"month": {},
+	"year":  {},
 }
 
 func (s *StatisticsService) GetUserStatistics(
@@ -38,7 +39,7 @@ func (s *StatisticsService) GetUserStatistics(
 		)
 	}
 
-	var statistics domain.Statistics
+	statistics := domain.Statistics{}
 	cacheKey := statisticsCacheKey(userID, period)
 
 	ok, err := s.CacheClient.Get(
@@ -48,7 +49,12 @@ func (s *StatisticsService) GetUserStatistics(
 	)
 
 	if ok {
-		return statistics, nil
+		if err != nil {
+			fmt.Println("failed to unmarshal cache")
+		} else {
+			fmt.Println("got from cache")
+			return statistics, nil
+		}
 	}
 
 	since, err := getTimeFromPeriod(&period)
@@ -94,21 +100,22 @@ func (s *StatisticsService) GetUserStatistics(
 	statistics.TotalIncome = totalIncome
 	statistics.Balance = totalIncome.Sub(totalSpending)
 	statistics.TotalSpending = totalSpending
-	leftPrecentage := statistics.Balance.Div(totalIncome).Mul(decimal.NewFromInt(100))
-	statistics.MoneyLeftPrecentage = leftPrecentage.StringFixed(2)
-	statistics.MoneySpentPrecentage = decimal.NewFromInt(100).Sub(leftPrecentage).StringFixed(2)
 
-	if err := s.CacheClient.Set(
-		ctx,
-		cacheKey,
-		statistics,
-	); err != nil {
-		slog.Warn(
-			"service: failed to cache statistics",
-			slog.String("error", err.Error()),
-		)
+	var leftPercentage decimal.Decimal
+
+	if totalIncome.IsZero() {
+		leftPercentage = decimal.Zero
+	} else {
+		leftPercentage = statistics.
+			Balance.
+			Div(totalIncome).
+			Mul(decimal.NewFromInt(100))
 	}
 
+	statistics.MoneyLeftPrecentage = leftPercentage.StringFixed(2)
+	statistics.MoneySpentPrecentage = decimal.NewFromInt(100).Sub(leftPercentage).StringFixed(2)
+	err = s.CacheClient.Set(ctx, cacheKey, statistics)
+	fmt.Println(err)
 	return statistics, nil
 }
 
