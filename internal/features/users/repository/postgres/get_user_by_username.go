@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/qury53/finapp/internal/core/domain"
 	core_errors "github.com/qury53/finapp/internal/core/transport/http/errors"
+	users_repository "github.com/qury53/finapp/internal/features/users/repository"
 )
 
 func (r *UsersRepository) GetUserByUsername(
@@ -24,7 +25,7 @@ func (r *UsersRepository) GetUserByUsername(
 	`
 
 	row := r.Pool.QueryRow(ctx, query, username)
-	var userModel UserModel
+	var userModel users_repository.UserModel
 	if err := row.Scan(
 		&userModel.ID,
 		&userModel.Version,
@@ -41,5 +42,5 @@ func (r *UsersRepository) GetUserByUsername(
 		return domain.User{}, fmt.Errorf("repository: scan error: %w", err)
 	}
 
-	return domainFromModel(userModel), nil
+	return users_repository.DomainFromModel(userModel), nil
 }

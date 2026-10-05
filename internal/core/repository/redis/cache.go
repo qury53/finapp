@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -44,4 +45,8 @@ func (c *Client) Del(
 	key string,
 ) error {
 	return c.Client.Del(ctx, key).Err()
+}
+
+func (c *Client) GenerateCacheKey(args ...string) string {
+	return strings.Join(args, ":")
 }

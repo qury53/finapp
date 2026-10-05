@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/qury53/finapp/internal/core/domain"
 	core_errors "github.com/qury53/finapp/internal/core/transport/http/errors"
+	users_repository "github.com/qury53/finapp/internal/features/users/repository"
 )
 
 func (r *UsersRepository) PatchUser(
@@ -36,8 +37,7 @@ func (r *UsersRepository) PatchUser(
 		created_at,
 		updated_at;
 	`
-
-	var userModel UserModel
+	var userModel users_repository.UserModel
 	row := r.Pool.QueryRow(
 		ctx,
 		query,
@@ -68,5 +68,5 @@ func (r *UsersRepository) PatchUser(
 		return domain.User{}, fmt.Errorf("repository: scan error: %w", err)
 	}
 
-	return domainFromModel(userModel), nil
+	return users_repository.DomainFromModel(userModel), nil
 }

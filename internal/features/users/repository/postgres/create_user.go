@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/qury53/finapp/internal/core/domain"
 	core_errors "github.com/qury53/finapp/internal/core/transport/http/errors"
+	users_repository "github.com/qury53/finapp/internal/features/users/repository"
 )
 
 func (r *UsersRepository) CreateUser(
@@ -34,7 +35,7 @@ func (r *UsersRepository) CreateUser(
 		user.UpdatedAt,
 	)
 
-	var userModel UserModel
+	var userModel users_repository.UserModel
 	if err := row.Scan(
 		&userModel.ID,
 		&userModel.Version,
@@ -54,5 +55,5 @@ func (r *UsersRepository) CreateUser(
 		return domain.User{}, fmt.Errorf("repository: scan error: %w", err)
 	}
 
-	return domainFromModel(userModel), nil
+	return users_repository.DomainFromModel(userModel), nil
 }

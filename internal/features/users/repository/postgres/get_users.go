@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/qury53/finapp/internal/core/domain"
+	users_repository "github.com/qury53/finapp/internal/features/users/repository"
 )
 
 func (r *UsersRepository) GetUsers(
@@ -28,9 +29,9 @@ func (r *UsersRepository) GetUsers(
 		return nil, fmt.Errorf("repository: query error: %w", err)
 	}
 
-	var userModels []UserModel
+	var userModels []users_repository.UserModel
 	for rows.Next() {
-		var userModel UserModel
+		var userModel users_repository.UserModel
 		if err := rows.Scan(
 			&userModel.ID,
 			&userModel.Version,
@@ -47,5 +48,5 @@ func (r *UsersRepository) GetUsers(
 		userModels = append(userModels, userModel)
 	}
 
-	return domainsFromModels(userModels), nil
+	return users_repository.DomainsFromModels(userModels), nil
 }

@@ -1,4 +1,4 @@
-package user_repository_postgres
+package users_repository
 
 import (
 	"time"
@@ -17,7 +17,7 @@ type UserModel struct {
 	UpdatedAt   time.Time `db:"updated_at"`
 }
 
-func domainFromModel(model UserModel) domain.User {
+func DomainFromModel(model UserModel) domain.User {
 	return domain.User{
 		ID:          model.ID,
 		Version:     model.Version,
@@ -30,10 +30,10 @@ func domainFromModel(model UserModel) domain.User {
 	}
 }
 
-func domainsFromModels(models []UserModel) []domain.User {
+func DomainsFromModels(models []UserModel) []domain.User {
 	domains := make([]domain.User, len(models))
 	for i, model := range models {
-		domains[i] = domainFromModel(model)
+		domains[i] = DomainFromModel(model)
 	}
 
 	return domains
