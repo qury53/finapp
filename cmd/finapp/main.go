@@ -26,6 +26,7 @@ import (
 	statistics_service "github.com/qury53/finapp/internal/features/statistics/service"
 	statistics_transport_http "github.com/qury53/finapp/internal/features/statistics/transport/http"
 	user_repository_postgres "github.com/qury53/finapp/internal/features/users/repository/postgres"
+	users_repository_redis "github.com/qury53/finapp/internal/features/users/repository/redis"
 	users_service "github.com/qury53/finapp/internal/features/users/service"
 	user_transport_http "github.com/qury53/finapp/internal/features/users/transport/http"
 )
@@ -74,14 +75,19 @@ func main() {
 
 	//creating feature users
 	logger.Debug("creating users feature")
-	usersRepository := user_repository_postgres.NewUsersRepository(pool)
-	usersService := users_service.NewUsersService(usersRepository)
+	usersPostgresRepository := user_repository_postgres.NewUsersRepository(pool)
+	usersRedisRepository := users_repository_redis.NewUsersRedisRepository(
+		redisClient,
+		usersPostgresRepository,
+	)
+
+	usersService := users_service.NewUsersService(usersRedisRepository)
 	usersHandler := user_transport_http.NewUsersHTTPHandler(usersService)
 
 	//creating feature auth
 	logger.Debug("creating auth feature")
 	authConfig := auth_service.NewConfigMust()
-	authService := auth_service.NewAuthService(authConfig, usersRepository, usersRepository)
+	authService := auth_service.NewAuthService(authConfig, usersRedisRepository, usersRedisRepository)
 	authHandler := auth_transport_http.NewAuthHTTPHandler(authService)
 
 	//creating server
@@ -117,7 +123,7 @@ func main() {
 		redisClient,
 		incomeRepository,
 		spendingRepository,
-		usersRepository,
+		usersRedisRepository,
 	)
 
 	statisticsTransport := statistics_transport_http.NewStatisticsHTTPHandler(statisticsService)
