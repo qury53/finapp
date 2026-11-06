@@ -21,6 +21,7 @@ import (
 	income_service "github.com/qury53/finapp/internal/features/income/service"
 	income_transport_http "github.com/qury53/finapp/internal/features/income/transport/http"
 	spending_repository_postgres "github.com/qury53/finapp/internal/features/spendings/repository/postgres"
+	spending_repository_redis "github.com/qury53/finapp/internal/features/spendings/repository/redis"
 	spending_service "github.com/qury53/finapp/internal/features/spendings/service"
 	spending_transport_http "github.com/qury53/finapp/internal/features/spendings/transport/http"
 	statistics_service "github.com/qury53/finapp/internal/features/statistics/service"
@@ -114,7 +115,11 @@ func main() {
 	//creating feature spending
 	logger.Debug("creating spending feature")
 	spendingRepository := spending_repository_postgres.NewSpendingRepository(pool)
-	spendingService := spending_service.NewSpendingService(spendingRepository)
+	spendingRedisRepo := spending_repository_redis.NewSpendingRedisRepository(
+		redisClient,
+		spendingRepository,
+	)
+	spendingService := spending_service.NewSpendingService(spendingRedisRepo)
 	spendingHandler := spending_transport_http.NewSpendingHTTPHandler(spendingService)
 
 	//creating feature statistics
